@@ -1,0 +1,5 @@
+dashboards: {}
+#  example_dashboard:
+#    name: Example Dashboard
+#    url: https://dune.com/<user>/<dashboard-slug>
+#    query_ids: []

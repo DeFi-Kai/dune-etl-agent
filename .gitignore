@@ -1,0 +1,27 @@
+# Environment
+.env
+*.env.*
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Local reference material (user's private specs, notes)
+context/*
+!context/.gitkeep
+
+# Rust build artifacts
+target/
+
+# Logs (local tracking only)
+logs/
