@@ -1,4 +1,4 @@
-# Dune Pipeline Starter
+# Dune ETL Agent
 
 An agent-driven ETL pipeline for Dune Analytics dashboards. You fill out a data spec, the agent writes, tests, and pushes DuneSQL queries to Dune, with GitHub for version control and optional GitHub Actions for materializing heavy API endpoints.
 
