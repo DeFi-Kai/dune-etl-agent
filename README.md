@@ -1,6 +1,13 @@
-# Dune ETL Agent
+# Agentic Pipeline for Onchain Analytics
 
-An agent-driven ETL pipeline for Dune Analytics dashboards. You fill out a data spec, the agent writes, tests, and pushes DuneSQL queries to Dune, with GitHub for version control and optional GitHub Actions for materializing heavy API endpoints.
+An agentic pipeline for onchain analytics and Dune dashboards. Define a data spec and the agent writes, tests, and pushes DuneSQL queries to Dune, with GitHub for version control and optional GitHub Actions for materializing heavy API endpoints.
+
+## Example Dashboards
+
+These dashboards are examples of outputs created with the pipeline:
+
+- [MetaDAO Blocmates Pro](https://dune.com/blocmates_research/metadao-blocmates-pro): MetaDAO ICO analytics covering commitments, final raises, oversubscription, contributors, and raise progress.
+- [Chain GDP](https://dune.com/blocmatesresearch/chain-gdp): Cross-chain analysis of chain GDP over time and GDP by protocol category.
 
 Designed to run under [Claude Code](https://claude.com/claude-code) — the `.claude/skills/` tree contains the agent's knowledge modules.
 
