@@ -9,8 +9,6 @@ These dashboards are examples of outputs created with the pipeline:
 - [MetaDAO Blocmates Pro](https://dune.com/blocmates_research/metadao-blocmates-pro): MetaDAO ICO analytics covering commitments, final raises, oversubscription, contributors, and raise progress.
 - [Chain GDP](https://dune.com/blocmatesresearch/chain-gdp): Cross-chain analysis of chain GDP over time and GDP by protocol category.
 
-Designed to run under [Claude Code](https://claude.com/claude-code) — the `.claude/skills/` tree contains the agent's knowledge modules.
-
 ## What's in here
 
 ```
@@ -51,6 +49,8 @@ Designed to run under [Claude Code](https://claude.com/claude-code) — the `.cl
 | **Total**   |         | **$92/mo** |
 
 ## Setup
+
+Designed to run under [Claude Code](https://claude.com/claude-code) — the `.claude/skills/` tree contains the agent's knowledge modules.
 
 1. **Clone and install**
    ```bash
