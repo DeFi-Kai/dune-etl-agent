@@ -1,6 +1,6 @@
 # Agentic Pipeline for Onchain Analytics
 
-An agentic pipeline for onchain analytics and Dune dashboards. Define a data spec and the agent writes, tests, and pushes DuneSQL queries to Dune, with GitHub for version control and optional GitHub Actions for materializing heavy API endpoints.
+This is an agentic pipeline for onchain analytics and Dune dashboards. Start by defining a data spec and the agent writes, tests, and pushes DuneSQL queries to Dune, with GitHub for version control and optional GitHub Actions for materializing heavy API endpoints.
 
 
 
