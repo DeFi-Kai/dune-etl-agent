@@ -9,36 +9,6 @@ These dashboards are examples of outputs created with the pipeline:
 - [MetaDAO Blocmates Pro](https://dune.com/blocmates_research/metadao-blocmates-pro): MetaDAO ICO analytics covering commitments, final raises, oversubscription, contributors, and raise progress.
 - [Chain GDP](https://dune.com/blocmatesresearch/chain-gdp): Cross-chain analysis of chain GDP over time and GDP by protocol category.
 
-## What's in here
-
-```
-.
-├── CLAUDE.md                        # Always-loaded agent instructions + canonical flow
-├── queries.yml                      # Registry of dashboards and query IDs (starts empty)
-├── .env.example                     # Copy to .env and fill in your Dune API key
-├── .gitignore
-├── .claude/
-│   ├── commands/
-│   │   └── run-spec.md              # Slash command: /run-spec <path> — orchestrates a full run
-│   └── skills/
-│       ├── dune-sql-best-practices/ # SQL patterns + verify.py; loads on any DuneSQL task
-│       ├── api-references/          # Technique doc; loads when spec declares APIs
-│       ├── chain-references/        # Technique doc; loads when spec declares chains
-│       ├── api-defillama/           # Leaf — example API leaf (DefiLlama)
-│       ├── chain-solana/            # Leaf — example chain leaf (Solana)
-│       └── dune-actions-csv-upload/ # Loads only when materializing an endpoint
-├── examples/
-│   ├── data_spec_example.md         # Sample data spec to copy from
-│   └── leaf_skill_template.md       # Template for adding new chain/API leaves
-├── context/                         # Gitignored. Drop your own specs/notes here.
-├── scripts/
-│   ├── push_to_dune.py              # repo → Dune (uses Dune API)
-│   ├── pull_from_dune.py            # Dune → repo (uses Dune API)
-│   └── requirements.txt             # Python deps: requests, pyyaml
-├── queries/                         # One folder per dashboard; starts empty
-└── .github/workflows/               # One YAML per materialized endpoint; starts empty
-```
-
 ## Requirements & Costs
 
 | Service     | Tier    | Cost       |
