@@ -96,6 +96,3 @@ The starter ships `chain-solana` and `api-defillama` as worked examples. To add 
 
 The existing leaves (`chain-solana/SKILL.md`, `api-defillama/SKILL.md`) are the reference implementations — mirror their structure for consistency.
 
-## License
-
-MIT — adapt freely.
