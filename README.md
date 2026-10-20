@@ -13,13 +13,13 @@ The original pipeline was used by the research team at [Blocmates](https://x.com
 
 ## How it works
 
-The pipeline starts with a data specification definining the desired visualizations. When the user invokes the `/run-spec` command in Claude Code, the agent selects the relevant skill files and Python scripts based on the blockchains and APIs referenced in the dataspec. 
+The pipeline starts with a data specification defining the desired visualizations. When the user invokes the `/run-spec` command in Claude Code, the agent selects the relevant skill files and Python scripts based on the blockchains and APIs referenced in the dataspec. 
 
 The agent generates and tests SQL queries, and calls external APIs when required. Generated queries are published to the user's Dune account and saved locally as `.sql` files. Users can inspect the queries in Dune and request changes in Claude Code that appear in real-time. After validating in Dune, users ask the agent to open a PR; the agent then pulls any Dune UI edits, commits the synchronized SQL, and pushes it to the configured GitHub repository for review and version control.
 
 Dashboard visualizations must be configured manually in Dune's interface. 
 
-The workflow is pre-loaded with context for the Solana blockchain and the DeFiLlama API. To generate queries with data from other blockchains and APIs you must first create additional context files. see the [Extending the Agent](#extending-the-agent) section. 
+The workflow is pre-loaded with context for the Solana blockchain and the DeFiLlama API. To generate queries with data from other blockchains and APIs you must first [create additional context files](#extending-the-agent).
 
 ![Pipeline Architecture](onchain-analysis-architecture.svg)
 
@@ -233,11 +233,10 @@ Existing examples include:
 
 To add support for another blockchain or API:
 
-1. Create a new subfolder in .claude/skills/ for the blockchain or API, then use an existing reference file as a template for your Markdown (.md) file.
+1. Create a new subfolder under .claude/skills/ named chain-<name> or api-<name>. Inside the subfolder, create a SKILL.md file using examples/leaf_skill_template.md as a template.
 2. Document the relevant tables or endpoints, authentication requirements, rate limits, and implementation considerations.
 3. Reference the new file through the `chains` or `apis` field in your data specification.
 4. Restart Claude Code or reload the relevant references so the agent can access the new file.
 
-Use the existing implementations as examples when defining additional skills.
 The existing leaves (`chain-solana/SKILL.md`, `api-defillama/SKILL.md`) are the reference implementations — mirror their structure for consistency.
 
