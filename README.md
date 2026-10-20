@@ -60,11 +60,9 @@ The following instructions use a Linux or macOS terminal.
 
 ### 1. Clone the repository
 
-Choose the GitHub repository that should receive your generated SQL. If you don't have write access to [DeFi-Kai/dune-etl-agent](https://github.com/DeFi-Kai/dune-etl-agent), fork it to your GitHub account first. Replace `<OWNER>` and `<REPO>` below with your intended destination's owner and repository name, and clone that repository:
-
 ```bash
-git clone "https://github.com/<OWNER>/<REPO>.git"
-cd "<REPO>"
+git clone https://github.com/DeFi-Kai/dune-etl-agent.git
+cd dune-etl-agent
 ```
 
 ### 2. Install Python dependencies
@@ -122,7 +120,7 @@ Claude Code must have access to a working model before you can invoke the agent 
 
 The workflow stores SQL in the checkout where Claude Code runs. Git pushes use that checkout's `origin` remote. The specification's `project` field selects a dashboard folder within this checkout, not a GitHub repository. GitHub authentication grants access; it does not select or change the destination repository.
 
-For an existing clone, replace `<OWNER>` and `<REPO>` with your intended destination and update both the fetch and push URLs:
+Fork [DeFi-Kai/dune-etl-agent](https://github.com/DeFi-Kai/dune-etl-agent) to your own GitHub account. Your fork is the destination for generated SQL. In the checkout created in step 1, replace `<OWNER>` and `<REPO>` with your fork's owner and repository name, then point `origin` at your fork by updating both the fetch and push URLs:
 
 ```bash
 git remote set-url origin "https://github.com/<OWNER>/<REPO>.git"
@@ -142,7 +140,7 @@ Every effective `origin` push URL must identify your intended `<OWNER>/<REPO>`. 
 
    Create a **fine-grained PAT** at https://github.com/settings/personal-access-tokens — scoped to *only* the repository you intend to push to, so the blast radius is contained if it leaks.
 
-   Scope the token to the destination repository chosen in step 1 and configured in step 5.
+   Scope the token to the destination repository chosen and configured in step 5.
 
    - **Repository access:** *Only select repositories* → select your repository
    - **Expiration:** 90 days (forces rotation)
