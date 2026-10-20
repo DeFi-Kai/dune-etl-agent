@@ -202,10 +202,10 @@ Existing examples include:
 
 To add support for another blockchain or API:
 
-1. Create a corresponding skill directory and `SKILL.md` file, following the structure of an existing leaf.
+1. Create a new Markdown (`.md`) file directly in `.claude/skills/`, using an existing reference file as a template.
 2. Document the relevant tables or endpoints, authentication requirements, rate limits, and implementation considerations.
-3. Reference the new skill through the `chains` or `apis` fields in your data specification.
-4. Restart Claude Code or reload the skills so the new reference can be discovered.
+3. Reference the new file through the `chains` or `apis` field in your data specification.
+4. Restart Claude Code or reload the relevant references so the agent can access the new file.
 
 Use the existing implementations as examples when defining additional skills.
 The existing leaves (`chain-solana/SKILL.md`, `api-defillama/SKILL.md`) are the reference implementations — mirror their structure for consistency.
