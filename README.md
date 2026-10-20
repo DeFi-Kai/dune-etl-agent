@@ -15,7 +15,7 @@ The original pipeline was used by the research team at [Blocmates](https://x.com
 
 The pipeline starts with a data specification definining the desired visualizations. When the user invokes the `/run-spec` command in Claude Code, the agent selects the relevant skill files and Python scripts based on the blockchains and APIs referenced in the dataspec. 
 
-The agent generates and tests SQL queries, and calls external APIs when required. Generated queries are published to the user's Dune account and daved as `.sql` files on Github for review and version control. Users can inspect the queries in Dune and request changes in Claude Code that appear in real-time. 
+The agent generates and tests SQL queries, and calls external APIs when required. Generated queries are published to the user's Dune account and saved locally as `.sql` files. Users can inspect the queries in Dune and request changes in Claude Code that appear in real-time. After validating in Dune, users ask the agent to open a PR; the agent then pulls any Dune UI edits, commits the synchronized SQL, and pushes it to the configured GitHub repository for review and version control.
 
 Dashboard visualizations must be configured manually in Dune's interface. 
 
@@ -60,9 +60,11 @@ The following instructions use a Linux or macOS terminal.
 
 ### 1. Clone the repository
 
+Choose the GitHub repository that should receive your generated SQL. If you don't have write access to [DeFi-Kai/dune-etl-agent](https://github.com/DeFi-Kai/dune-etl-agent), fork it to your GitHub account first. Replace `<OWNER>` and `<REPO>` below with your intended destination's owner and repository name, and clone that repository:
+
 ```bash
-git clone https://github.com/DeFi-Kai/dune-etl-agent.git
-cd dune-etl-agent
+git clone "https://github.com/<OWNER>/<REPO>.git"
+cd "<REPO>"
 ```
 
 ### 2. Install Python dependencies
@@ -116,11 +118,31 @@ The `.claude/` directory contains the agent instructions, commands, and skills u
 
 Claude Code must have access to a working model before you can invoke the agent workflow. 
 
+### 5. Configure the destination repository
+
+The workflow stores SQL in the checkout where Claude Code runs. Git pushes use that checkout's `origin` remote. The specification's `project` field selects a dashboard folder within this checkout, not a GitHub repository. GitHub authentication grants access; it does not select or change the destination repository.
+
+For an existing clone, replace `<OWNER>` and `<REPO>` with your intended destination and update both the fetch and push URLs:
+
+```bash
+git remote set-url origin "https://github.com/<OWNER>/<REPO>.git"
+git remote set-url --push origin "https://github.com/<OWNER>/<REPO>.git"
+```
+
+Verify the destination before running `/run-spec`:
+
+```bash
+git remote -v
+git remote get-url --push --all origin
+```
+
+Every effective `origin` push URL must identify your intended `<OWNER>/<REPO>`. If multiple push URLs are listed, remove unintended destinations before proceeding. After authenticating in step 6, also set GitHub CLI's default repository to this same destination.
+
 ### 6. Authenticate with GitHub (for `gh pr create` and `git push`)
 
    Create a **fine-grained PAT** at https://github.com/settings/personal-access-tokens — scoped to *only* the repository you intend to push to, so the blast radius is contained if it leaks.
 
-   If you don't have write access to this repository, fork it to your GitHub account first.
+   Scope the token to the destination repository chosen in step 1 and configured in step 5.
 
    - **Repository access:** *Only select repositories* → select your repository
    - **Expiration:** 90 days (forces rotation)
@@ -149,6 +171,13 @@ Claude Code must have access to a working model before you can invoke the agent 
    ```
 
    GitHub CLI can configure Git authentication for HTTPS operations, allowing `git push` without repeating the login process.
+
+   Set and verify GitHub CLI's default repository, using the same `<OWNER>/<REPO>` as `origin`:
+
+   ```bash
+   gh repo set-default <OWNER>/<REPO>
+   gh repo set-default --view
+   ```
 
 ## Usage
 
@@ -186,6 +215,8 @@ The workflow uses `verify.py` for SQL checks and Dune API operations for live ex
 Generated queries are stored as `.sql` files for version control and inspection. The workflow can synchronize queries with Dune using the provided scripts.
 
 The final queries can be opened in Dune's interface for manual verification and visualization configuration.
+
+After validation, ask the agent to open a PR. It pulls the latest SQL from Dune before committing, pushing a feature branch to the verified `origin` destination, and creating a PR in that same repository. `/run-spec` does not open a PR automatically.
 
 Live execution, synchronization, and the complete `/run-spec` workflow require the external services described in the prerequisites.
 

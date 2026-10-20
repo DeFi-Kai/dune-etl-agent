@@ -181,9 +181,11 @@ jobs:
 
 ### Setup steps:
 1. Get Dune API key from https://dune.com/settings/api
-2. Add as GitHub repo secret: **Settings → Secrets and variables → Actions → New repository secret** → Name: `DUNE_API_KEY`
-3. Push the workflow file and script to `main`
-4. Trigger manually: **Actions tab → workflow name → Run workflow**
+2. Add as a secret in the verified destination repository from `CLAUDE.md` → Git Workflow → Repository Destination: **Settings → Secrets and variables → Actions → New repository secret** → Name: `DUNE_API_KEY`
+3. Commit the workflow file and script on a feature branch, push to the verified `origin`, and merge into `main` through the normal PR process targeting that same repository.
+4. Trigger manually in that repository: **Actions tab → workflow name → Run workflow**
+
+The template's default `actions/checkout@v4` checks out the repository hosting the workflow. Its bot commits and `git push` update generated CSVs in that repository on the checked-out branch (normally `main` for scheduled runs). These scheduled bot commits are separate from the agent's feature-branch PR process for SQL, scripts, and workflow changes.
 
 Secrets are available immediately — no merge/deploy needed.
 

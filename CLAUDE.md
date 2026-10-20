@@ -84,6 +84,9 @@ Dune supports inline `http_get()` / `http_post()` (**LiveFetch**) inside SQL. **
 Because Dune is updated at step 2, queries are live before the PR exists. That ordering is intentional — correctness can only be checked on Dune, so the artifact has to be there first. GitHub records the merged history so any query can be rolled back later.
 
 ### Creating a New Query
+
+Run these examples from the verified checkout root. Replace `<OWNER>/<REPO>` with the verified `origin` push destination from Git Workflow → Repository Destination.
+
 ```bash
 # 1. Create feature branch
 git checkout -b feat/new-metric
@@ -94,20 +97,28 @@ git checkout -b feat/new-metric
 # 3. Push to Dune (creates query, renames file, updates queries.yml)
 python scripts/push_to_dune.py --new-only --verify
 
-# 4. Commit and open a PR
+# 4. Stop for the user to validate in Dune's UI and ask for a PR
+
+# 5. Only after that request, sync UI edits, commit, and open a PR
+python scripts/pull_from_dune.py
 git add queries/ queries.yml
 git commit -m "[FEAT] Add <description>"
 git push -u origin feat/new-metric
-gh pr create
+gh pr create --repo <OWNER>/<REPO> --base main --head feat/new-metric
 ```
 
 ### Updating Existing Queries
 ```bash
+# Work on a feat/<branch> branch in the verified checkout root
 python scripts/push_to_dune.py --verify
+
+# Stop for the user to validate in Dune's UI and ask for a PR
+# Only after that request, sync UI edits before committing
+python scripts/pull_from_dune.py
 git add queries/
 git commit -m "[FIX] Description"
 git push -u origin feat/<branch>
-gh pr create
+gh pr create --repo <OWNER>/<REPO> --base main --head feat/<branch>
 ```
 
 ### Pulling Latest from Dune
@@ -117,6 +128,15 @@ python scripts/pull_from_dune.py --dashboard <dashboard>
 ```
 
 ## Git Workflow
+
+### Repository Destination
+
+The destination is the current checkout's `origin` push repository. Before generating SQL, resolve the checkout root with `git rev-parse --show-toplevel`, verify it contains this project's instructions, `queries.yml`, and scripts, and inspect `git remote -v`, `git remote get-url --push --all origin`, and `gh repo set-default --view`. All effective `origin` push URLs and GitHub CLI's default must identify the same `OWNER/REPO` and match any destination explicitly requested by the user. Show that repository and the absolute local SQL directory. If the root or destination is missing, ambiguous, or conflicting, ask the user to resolve it before continuing; do not retarget remotes automatically.
+
+Use this same checkout root for file operations, Dune scripts, and Git commands. Recheck the destination before committing, pushing, or opening a PR. Push to the verified `origin` and create the PR with `gh pr create --repo <OWNER>/<REPO> --base main --head feat/<task-name>`, using that same verified destination and the feature branch just pushed.
+
+### Branches and Commits
+
 1. Never commit directly to `main`. Use `feat/<task-name>` branches.
 2. Commit messages: `[TYPE] Description`
    - `[FEAT]` - New query or feature
