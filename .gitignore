@@ -1,6 +1,8 @@
 # Environment
 .env
 *.env.*
+!.env.example
+.venv/
 
 # Node
 node_modules/
@@ -25,3 +27,7 @@ target/
 
 # Logs (local tracking only)
 logs/
+
+
+__pycache__/
+*.py[cod]
