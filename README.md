@@ -233,7 +233,7 @@ Existing examples include:
 
 To add support for another blockchain or API:
 
-1. 1. Create a new subfolder under `.claude/skills/` named `chain-<name>` or `api-<name>`. Inside the subfolder, create a `SKILL.md` file using `examples/leaf_skill_template.md` as a template.
+1. Create a new subfolder under `.claude/skills/` named `chain-<name>` or `api-<name>`. Inside the subfolder, create a `SKILL.md` file using `examples/leaf_skill_template.md` as a template.
 2. Document the relevant tables or endpoints, authentication requirements, rate limits, and implementation considerations.
 3. Reference the new file through the `chains` or `apis` field in your data specification.
 4. Restart Claude Code or reload the relevant references so the agent can access the new file.
