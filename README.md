@@ -118,9 +118,11 @@ Claude Code must have access to a working model before you can invoke the agent 
 
 ### 5. Configure the destination repository
 
-The workflow stores SQL in the checkout where Claude Code runs. Git pushes use that checkout's `origin` remote. The specification's `project` field selects a dashboard folder within this checkout, not a GitHub repository. GitHub authentication grants access; it does not select or change the destination repository.
+The agent saves generated SQL files in the local `dune-etl-agent` folder where you run Claude Code. The `project` field in your data specification determines which dashboard subfolder holds those files. When you push them to GitHub, Git sends them to a saved repository address called `origin`. Signing in to GitHub gives you access; configuring `origin` tells Git where to send your files.
 
-Fork [DeFi-Kai/dune-etl-agent](https://github.com/DeFi-Kai/dune-etl-agent) to your own GitHub account. Your fork is the destination for generated SQL. In the checkout created in step 1, replace `<OWNER>` and `<REPO>` with your fork's owner and repository name, then point `origin` at your fork by updating both the fetch and push URLs:
+Open [DeFi-Kai/dune-etl-agent](https://github.com/DeFi-Kai/dune-etl-agent) on GitHub and click **Fork** to create a copy under your own account. Your fork will store your generated SQL.
+
+Step 1 downloaded the project from the original repository. The next two commands connect that same local folder to your fork, so future pushes go to your GitHub account. Run them in your local `dune-etl-agent` folder, replacing `<OWNER>` with your GitHub username and `<REPO>` with your fork's repository name (usually `dune-etl-agent`):
 
 ```bash
 git remote set-url origin "https://github.com/<OWNER>/<REPO>.git"
