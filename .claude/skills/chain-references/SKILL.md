@@ -27,3 +27,9 @@ This skill is a **technique library**, not a router. It covers the shared patter
 
 ## 5) Per-chain specifics
 - Load the corresponding `chain-<name>` file for concrete table names, retention notes, and quirks. If it does not exist yet, create it alongside this file when a new chain is added to the data spec.
+
+## 6) Quick Reference: Chain Skill Selection
+
+| I need... | Load this skill |
+|---|---|
+| Solana transaction fees, SPL token transfers, DEX trades, table schemas, and address handling | [`chain-solana`](../chain-solana/SKILL.md) |
