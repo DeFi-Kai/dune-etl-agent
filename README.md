@@ -19,7 +19,7 @@ The agent generates and tests SQL queries, and calls external APIs when required
 
 Dashboard visualizations must be configured manually in Dune's interface. 
 
-The workflow is pre-loaded with context for the Solana blockchain and the DeFiLlama API. To generate queries with data from other blockchains and APIs you must first create additional context files. see the {insert} section. 
+The workflow is pre-loaded with context for the Solana blockchain and the DeFiLlama API. To generate queries with data from other blockchains and APIs you must first create additional context files. see the [Extending the Agent](#extending-the-agent) section. 
 
 ![Pipeline Architecture](onchain-analysis-architecture.svg)
 
@@ -233,7 +233,7 @@ Existing examples include:
 
 To add support for another blockchain or API:
 
-1. Create a new Markdown (`.md`) file directly in `.claude/skills/`, using an existing reference file as a template.
+1. Create a new subfolder in .claude/skills/ for the blockchain or API, then use an existing reference file as a template for your Markdown (.md) file.
 2. Document the relevant tables or endpoints, authentication requirements, rate limits, and implementation considerations.
 3. Reference the new file through the `chains` or `apis` field in your data specification.
 4. Restart Claude Code or reload the relevant references so the agent can access the new file.
