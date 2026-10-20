@@ -30,11 +30,21 @@ Load based on the spec:
 
 **If a declared leaf does not exist** (e.g. spec says `chains: [avalanche]` but `.claude/skills/chain-avalanche/` is missing): stop before writing any SQL. Tell the user the leaf is missing, show the template at `examples/leaf_skill_template.md`, and ask them to either author the leaf or remove the entry from the spec.
 
-## 3. Confirm the dashboard target
+## 3. Confirm the repository target
+
+Resolve the destination per `CLAUDE.md` → Git Workflow → Repository Destination before selecting a dashboard or writing SQL:
+
+- Run `git rev-parse --show-toplevel` and verify that the root contains this project's `CLAUDE.md`, `queries.yml`, `.claude/`, and `scripts/`. Use this same root for all subsequent file operations, scripts, and Git commands.
+- Inspect `git remote -v`, `git remote get-url --push --all origin`, and `gh repo set-default --view`. All effective `origin` push URLs and GitHub CLI's default must identify the same GitHub `OWNER/REPO` and match any destination explicitly requested by the user.
+- Show the resolved `OWNER/REPO`, checkout root, and absolute local `queries/` directory. If the root or destination is missing, ambiguous, or conflicting, stop and ask the user to resolve it before continuing. Do not retarget remotes automatically.
+
+## 4. Confirm the dashboard target
 
 Check `queries.yml` for an entry matching `project`. If it exists, use that dashboard's folder (`queries/<project>/`). If not, ask the user: create a new dashboard entry, or write queries under a different existing dashboard?
 
-## 4. For each visualization, follow the canonical flow
+Show the selected dashboard's absolute SQL directory under the verified checkout root.
+
+## 5. For each visualization, follow the canonical flow
 
 Per the flow in `CLAUDE.md` → Query Workflow:
 
@@ -46,7 +56,7 @@ Per the flow in `CLAUDE.md` → Query Workflow:
 3. **If `verify.py` passes**, run `push_to_dune.py --new-only --verify` to save on Dune and rename the file to `query_<id>.sql`.
 4. **If execution returns a LiveFetch payload cap (429 / >4 MB)**, pause and ask the user to confirm materializing per `api-references` §5. Do not auto-generate a workflow.
 
-## 5. Hand back to the user
+## 6. Hand back to the user
 
 When all visualizations have been pushed:
 - List each query ID and its URL on Dune

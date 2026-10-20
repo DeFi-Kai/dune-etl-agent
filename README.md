@@ -15,7 +15,7 @@ The original pipeline was used by the research team at [Blocmates](https://x.com
 
 The pipeline starts with a data specification definining the desired visualizations. When the user invokes the `/run-spec` command in Claude Code, the agent selects the relevant skill files and Python scripts based on the blockchains and APIs referenced in the dataspec. 
 
-The agent generates and tests SQL queries, and calls external APIs when required. Generated queries are published to the user's Dune account and daved as `.sql` files on Github for review and version control. Users can inspect the queries in Dune and request changes in Claude Code that appear in real-time. 
+The agent generates and tests SQL queries, and calls external APIs when required. Generated queries are published to the user's Dune account and saved locally as `.sql` files. Users can inspect the queries in Dune and request changes in Claude Code that appear in real-time. After validating in Dune, users ask the agent to open a PR; the agent then pulls any Dune UI edits, commits the synchronized SQL, and pushes it to the configured GitHub repository for review and version control.
 
 Dashboard visualizations must be configured manually in Dune's interface. 
 
@@ -116,11 +116,33 @@ The `.claude/` directory contains the agent instructions, commands, and skills u
 
 Claude Code must have access to a working model before you can invoke the agent workflow. 
 
+### 5. Configure the destination repository
+
+The agent saves generated SQL files in the local `dune-etl-agent` folder where you run Claude Code. The `project` field in your data specification determines which dashboard subfolder holds those files. When you push them to GitHub, Git sends them to a saved repository address called `origin`. Signing in to GitHub gives you access; configuring `origin` tells Git where to send your files.
+
+Open [DeFi-Kai/dune-etl-agent](https://github.com/DeFi-Kai/dune-etl-agent) on GitHub and click **Fork** to create a copy under your own account. Your fork will store your generated SQL.
+
+Step 1 downloaded the project from the original repository. The next two commands connect that same local folder to your fork, so future pushes go to your GitHub account. Run them in your local `dune-etl-agent` folder, replacing `<OWNER>` with your GitHub username and `<REPO>` with your fork's repository name (usually `dune-etl-agent`):
+
+```bash
+git remote set-url origin "https://github.com/<OWNER>/<REPO>.git"
+git remote set-url --push origin "https://github.com/<OWNER>/<REPO>.git"
+```
+
+Verify the destination before running `/run-spec`:
+
+```bash
+git remote -v
+git remote get-url --push --all origin
+```
+
+Every effective `origin` push URL must identify your intended `<OWNER>/<REPO>`. If multiple push URLs are listed, remove unintended destinations before proceeding. After authenticating in step 6, also set GitHub CLI's default repository to this same destination.
+
 ### 6. Authenticate with GitHub (for `gh pr create` and `git push`)
 
    Create a **fine-grained PAT** at https://github.com/settings/personal-access-tokens — scoped to *only* the repository you intend to push to, so the blast radius is contained if it leaks.
 
-   If you don't have write access to this repository, fork it to your GitHub account first.
+   Scope the token to the destination repository chosen and configured in step 5.
 
    - **Repository access:** *Only select repositories* → select your repository
    - **Expiration:** 90 days (forces rotation)
@@ -149,6 +171,13 @@ Claude Code must have access to a working model before you can invoke the agent 
    ```
 
    GitHub CLI can configure Git authentication for HTTPS operations, allowing `git push` without repeating the login process.
+
+   Set and verify GitHub CLI's default repository, using the same `<OWNER>/<REPO>` as `origin`:
+
+   ```bash
+   gh repo set-default <OWNER>/<REPO>
+   gh repo set-default --view
+   ```
 
 ## Usage
 
@@ -186,6 +215,8 @@ The workflow uses `verify.py` for SQL checks and Dune API operations for live ex
 Generated queries are stored as `.sql` files for version control and inspection. The workflow can synchronize queries with Dune using the provided scripts.
 
 The final queries can be opened in Dune's interface for manual verification and visualization configuration.
+
+After validation, ask the agent to open a PR. It pulls the latest SQL from Dune before committing, pushing a feature branch to the verified `origin` destination, and creating a PR in that same repository. `/run-spec` does not open a PR automatically.
 
 Live execution, synchronization, and the complete `/run-spec` workflow require the external services described in the prerequisites.
 
