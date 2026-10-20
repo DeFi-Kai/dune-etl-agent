@@ -80,7 +80,7 @@ Install the dependencies:
 python -m pip install -r scripts/requirements.txt
 ```
 
-### 3. Configure environment variables
+### 3. Configure environment variables (Dune and other APIs)
 
 Copy the example environment file:
 
@@ -114,23 +114,41 @@ claude
 
 The `.claude/` directory contains the agent instructions, commands, and skills used by the workflow.
 
-Claude Code must have access to a working model before you can invoke the agent workflow. A separate Claude subscription is not necessarily required when using a supported alternative provider, but model compatibility and performance have not been verified for this repository.
+Claude Code must have access to a working model before you can invoke the agent workflow. 
 
-### 6. Configure GitHub authentication (optional)
+### 6. Authenticate with GitHub (for `gh pr create` and `git push`)
 
-The pipeline uses GitHub for version control and pull requests.
+   Create a **fine-grained PAT** at https://github.com/settings/personal-access-tokens — scoped to *only* the repository you intend to push to, so the blast radius is contained if it leaks.
 
-If you intend to use the automated publishing workflow, install [GitHub CLI](https://cli.github.com/) and authenticate:
+   If you don't have write access to this repository, fork it to your GitHub account first.
 
-```bash
-gh auth login
-```
+   - **Repository access:** *Only select repositories* → select your repository
+   - **Expiration:** 90 days (forces rotation)
+   - **Repository permissions:**
+     - `Contents`: Read and write — for `git push` / `git pull`
+     - `Pull requests`: Read and write — for `gh pr create`
+     - `Workflows`: Read and write — only if the agent should edit `.github/workflows/*.yml`
+     - `Metadata`: Read (auto-included)
 
-Follow the interactive prompts to authenticate with your GitHub account.
+   Leave everything else off. No account permissions, no other repositories.
 
-The authenticated account must have the appropriate repository permissions to push branches and open pull requests. Use the minimum permissions necessary.
+   Then authenticate `gh` with the token:
 
-GitHub authentication is not required for local installation or static verification.
+   ```bash
+   gh auth login
+   # → GitHub.com
+   # → HTTPS
+   # → Paste an authentication token
+   # → Paste your PAT
+   ```
+
+   Verify authentication:
+
+   ```bash
+   gh auth status
+   ```
+
+   GitHub CLI can configure Git authentication for HTTPS operations, allowing `git push` without repeating the login process.
 
 ## Usage
 
