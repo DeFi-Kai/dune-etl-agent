@@ -25,6 +25,8 @@ The workflow includes reference material for the Solana blockchain and the DefiL
 
 ![Pipeline architecture](onchain-analysis-architecture.svg)
 
+For a walkthrough of the architecture, design choices, and workflow, read [Building an agentic pipeline for onchain data analysis](https://defi-kai.github.io/kai-site/work/building-an-agentic-pipeline-for-onchain-analytics/).
+
 ## Example dashboards
 
 The following dashboards were created with the original pipeline at Blocmates:
