@@ -1,8 +1,8 @@
 # Agentic pipeline for onchain data analysis
 
-This pipeline uses Claude Code to automate SQL query development in Dune, including query generation and testing. It also supports ingesting data from external APIs to create custom datasets in Dune. The workflow provides a standardized process for managing files and maintaining version control through GitHub.
+Use this pipeline in Claude Code to generate, test, and publish DuneSQL queries from a data specification. Optionally, ingest data from external APIs to create custom datasets in [Dune](https://dune.com/). Save queries in GitHub for version control and review.
 
-The research team at [Blocmates](https://x.com/blocmates) used the original pipeline. This version recreates the workflow without Blocmates' company data.
+The original pipeline was used by the research team at [Blocmates](https://x.com/blocmates). This version recreates the workflow without Blocmates' company data. 
 
 ## Features
 
