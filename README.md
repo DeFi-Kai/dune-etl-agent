@@ -1,6 +1,6 @@
 # Agentic Pipeline for Onchain Data Analysis
 
-This pipeline automates SQL query development, with optional support for ingesting external data from APIs to load custom datasets in Dune. The agent is designed for Claude Code's CLI. It provides a standardized workflow for generating and testing queries in Dune using AI, managing files, and maintaining version control through Github.
+This pipeline automates SQL query development, with optional support for ingesting external data from APIs to load custom datasets in [Dune](https://dune.com/). The agent is designed for Claude Code's CLI. It provides a standardized workflow for generating and testing queries in Dune using AI, managing files, and maintaining version control through Github.
 
 The original pipeline was used by the research team at [Blocmates](https://x.com/blocmates). This version recreates the workflow without Blocmates' company data. 
 
