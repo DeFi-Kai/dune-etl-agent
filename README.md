@@ -1,6 +1,6 @@
-# Agentic Pipeline for Onchain Data Analysis
+# Agentic pipeline for onchain data analysis
 
-This pipeline automates SQL query development, with optional support for ingesting external data from APIs to load custom datasets in [Dune](https://dune.com/). The agent is designed for Claude Code's CLI. It provides a standardized workflow for generating and testing queries in Dune using AI, managing files, and maintaining version control through Github.
+Use this pipeline in Claude Code to generate, test, and publish DuneSQL queries from a data specification. Optionally, ingest data from external APIs to create custom datasets in [Dune](https://dune.com/). Save queries in GitHub for version control and review.
 
 The original pipeline was used by the research team at [Blocmates](https://x.com/blocmates). This version recreates the workflow without Blocmates' company data. 
 
@@ -13,22 +13,24 @@ The original pipeline was used by the research team at [Blocmates](https://x.com
 
 ## How it works
 
-The pipeline starts with a data specification defining the desired visualizations. When the user invokes the `/run-spec` command in Claude Code, the agent selects the relevant skill files and Python scripts based on the blockchains and APIs referenced in the dataspec. 
+Start with a data specification that describes the visualizations you want to create. When you run `/run-spec` in Claude Code, the agent selects the relevant skill files and Python scripts based on the blockchains and APIs in your specification.
 
-The agent generates and tests SQL queries, and calls external APIs when required. Generated queries are published to the user's Dune account and saved locally as `.sql` files. Users can inspect the queries in Dune and request changes in Claude Code that appear in real-time. After validating in Dune, users ask the agent to open a PR; the agent then pulls any Dune UI edits, commits the synchronized SQL, and pushes it to the configured GitHub repository for review and version control.
+The agent generates and tests SQL queries and calls external APIs when required. It publishes queries to your Dune account and saves them locally as `.sql` files. Inspect the queries in Dune and request changes in Claude Code to update them in real time.
 
-Dashboard visualizations must be configured manually in Dune's interface. 
+After validating the queries in Dune, ask the agent to open a pull request (PR). The agent pulls any SQL edits you made in Dune, commits the synchronized files, and pushes them to your configured GitHub repository for review and version control.
 
-The workflow is pre-loaded with context for the Solana blockchain and the DeFiLlama API. To generate queries with data from other blockchains and APIs you must first [create additional context files](#extending-the-agent).
+Configure dashboard visualizations manually in Dune.
 
-![Pipeline Architecture](onchain-analysis-architecture.svg)
+The workflow includes reference material for the Solana blockchain and the DefiLlama API. To use other blockchains and APIs, first [create additional context files](#extend-the-agent).
 
-## Example Dashboards
+![Pipeline architecture](onchain-analysis-architecture.svg)
+
+## Example dashboards
 
 The following dashboards were created with the original pipeline at Blocmates:
+
 - [MetaDAO Blocmates Pro](https://dune.com/blocmates_research/metadao-blocmates-pro): MetaDAO ICO analytics covering commitments, final raises, oversubscription, contributors, and raise progress.
 - [Chain GDP](https://dune.com/blocmatesresearch/chain-gdp): Cross-chain analysis of chain GDP over time and GDP by protocol category.
-
 
 ## Prerequisites
 
@@ -45,14 +47,14 @@ The following dashboards were created with the original pipeline at Blocmates:
 
 ### Costs
 
-| Service     | Tier    | Cost       |
-| ----------- | ------- | ---------- |
-| Dune        | Analyst | $75/mo     |
-| GitHub      | Free    | $0         |
-| Claude Code | Pro     | $17/mo     |
-| **Total**   |         | **$92/mo** |
+| Service     | Tier    | Estimated monthly cost (USD) |
+| ----------- | ------- | ---------------------------- |
+| Dune        | Analyst | $75                          |
+| GitHub      | Free    | $0                           |
+| Claude Code | Pro     | $17                          |
+| **Total**   |         | **$92**                      |
 
-Consult the providers' current documentation for subscription costs, model authentication, and API availability.
+Actual costs depend on your plan, billing cycle, and usage. Consult the providers' current documentation for pricing, model authentication, and API availability.
 
 ## Setup
 
@@ -80,7 +82,7 @@ Install the dependencies:
 python -m pip install -r scripts/requirements.txt
 ```
 
-### 3. Configure environment variables (Dune and other APIs)
+### 3. Configure API credentials
 
 Copy the example environment file:
 
@@ -100,7 +102,7 @@ Add any credentials required by external APIs used in your data specifications.
 
 **Security:** Never commit `.env` or API credentials to version control. Only `.env.example`, containing placeholder values, should be tracked.
 
-If you do not have Dune API access, you can still install the dependencies and run local static checks. Live query execution and API synchronization will not be available.
+If you don't have Dune API access, you can still install the dependencies and run local static checks. Live query execution and API synchronization won't be available.
 
 ### 4. Configure Claude Code
 
@@ -114,65 +116,62 @@ claude
 
 The `.claude/` directory contains the agent instructions, commands, and skills used by the workflow.
 
-Claude Code must have access to a working model before you can invoke the agent workflow. 
+Claude Code needs access to a working model to run the workflow.
 
 ### 5. Configure the destination repository
 
-The agent saves generated SQL files in the local `dune-etl-agent` folder where you run Claude Code. The `project` field in your data specification determines which dashboard subfolder holds those files. When you push them to GitHub, Git sends them to a saved repository address called `origin`. Signing in to GitHub gives you access; configuring `origin` tells Git where to send your files.
+The agent saves SQL files in a dashboard subfolder determined by the `project` field in your data specification. Configure Git's `origin` remote to push these files to your fork.
 
-Open [DeFi-Kai/dune-etl-agent](https://github.com/DeFi-Kai/dune-etl-agent) on GitHub and click **Fork** to create a copy under your own account. Your fork will store your generated SQL.
+1. Open [DeFi-Kai/dune-etl-agent](https://github.com/DeFi-Kai/dune-etl-agent) on GitHub and select **Fork** to create a copy under your account.
+2. In your local `dune-etl-agent` folder, run the following commands. Replace `<OWNER>` with your GitHub username and `<REPO>` with your fork's repository name (usually `dune-etl-agent`).
 
-Step 1 downloaded the project from the original repository. The next two commands connect that same local folder to your fork, so future pushes go to your GitHub account. Run them in your local `dune-etl-agent` folder, replacing `<OWNER>` with your GitHub username and `<REPO>` with your fork's repository name (usually `dune-etl-agent`):
+   ```bash
+   git remote set-url origin "https://github.com/<OWNER>/<REPO>.git"
+   git remote set-url --push origin "https://github.com/<OWNER>/<REPO>.git"
+   ```
 
-```bash
-git remote set-url origin "https://github.com/<OWNER>/<REPO>.git"
-git remote set-url --push origin "https://github.com/<OWNER>/<REPO>.git"
-```
+3. Verify the destination before running `/run-spec`.
 
-Verify the destination before running `/run-spec`:
+   ```bash
+   git remote -v
+   git remote get-url --push --all origin
+   ```
 
-```bash
-git remote -v
-git remote get-url --push --all origin
-```
+   Check that every `origin` push URL points to your intended `<OWNER>/<REPO>`. If multiple push URLs are listed, remove unintended destinations before proceeding.
 
-Every effective `origin` push URL must identify your intended `<OWNER>/<REPO>`. If multiple push URLs are listed, remove unintended destinations before proceeding. After authenticating in step 6, also set GitHub CLI's default repository to this same destination.
+In step 6, set GitHub CLI's default repository to the same destination.
 
-### 6. Authenticate with GitHub (for `gh pr create` and `git push`)
+### 6. Authenticate with GitHub
 
-   Create a **fine-grained PAT** at https://github.com/settings/personal-access-tokens — scoped to *only* the repository you intend to push to, so the blast radius is contained if it leaks.
+1. In GitHub, [create a fine-grained personal access token (PAT)](https://github.com/settings/personal-access-tokens). Restrict it to the destination repository from step 5 to limit access if the token is exposed.
 
-   Scope the token to the destination repository chosen and configured in step 5.
+2. Configure the token's access and permissions.
 
-   - **Repository access:** *Only select repositories* → select your repository
-   - **Expiration:** 90 days (forces rotation)
+   - **Repository access:** Choose **Only select repositories**, and select your destination repository.
+   - **Expiration:** Set an expiration of 90 days.
    - **Repository permissions:**
-     - `Contents`: Read and write — for `git push` / `git pull`
-     - `Pull requests`: Read and write — for `gh pr create`
-     - `Workflows`: Read and write — only if the agent should edit `.github/workflows/*.yml`
-     - `Metadata`: Read (auto-included)
+     - **Contents:** Read and write, for `git push` and `git pull`.
+     - **Pull requests:** Read and write, for `gh pr create`.
+     - **Workflows:** Read and write, only if the agent needs to edit `.github/workflows/*.yml`.
+     - **Metadata:** Read access is included automatically.
 
-   Leave everything else off. No account permissions, no other repositories.
+   Leave all other permissions disabled.
 
-   Then authenticate `gh` with the token:
+3. In your terminal, start GitHub CLI authentication.
 
    ```bash
    gh auth login
-   # → GitHub.com
-   # → HTTPS
-   # → Paste an authentication token
-   # → Paste your PAT
    ```
 
-   Verify authentication:
+   Choose **GitHub.com**, then **HTTPS**. When asked how to authenticate, choose **Paste an authentication token** and paste your PAT. If prompted to authenticate Git with your GitHub credentials, choose **Yes** to use them for HTTPS operations such as `git push`.
+
+4. Verify authentication.
 
    ```bash
    gh auth status
    ```
 
-   GitHub CLI can configure Git authentication for HTTPS operations, allowing `git push` without repeating the login process.
-
-   Set and verify GitHub CLI's default repository, using the same `<OWNER>/<REPO>` as `origin`:
+5. In your local `dune-etl-agent` folder, set and verify GitHub CLI's default repository. Use the same `<OWNER>/<REPO>` as `origin`.
 
    ```bash
    gh repo set-default <OWNER>/<REPO>
@@ -198,7 +197,7 @@ The `context/` directory is excluded from version control so project-specific sp
 
 ### 2. Run the agent
 
-Open Claude Code in the repository directory and invoke:
+Open Claude Code in the repository directory and run:
 
 ```text
 /run-spec context/<project>.md
@@ -212,19 +211,19 @@ The agent reads the specification, loads the relevant skills and reference files
 
 The workflow uses `verify.py` for SQL checks and Dune API operations for live execution.
 
-Generated queries are stored as `.sql` files for version control and inspection. The workflow can synchronize queries with Dune using the provided scripts.
+The agent stores generated queries as `.sql` files for version control and inspection. It uses the provided scripts to synchronize queries with Dune.
 
-The final queries can be opened in Dune's interface for manual verification and visualization configuration.
+Open the queries in Dune to verify the results and configure visualizations.
 
-After validation, ask the agent to open a PR. It pulls the latest SQL from Dune before committing, pushing a feature branch to the verified `origin` destination, and creating a PR in that same repository. `/run-spec` does not open a PR automatically.
+After validation, ask the agent to open a PR. It pulls the latest SQL from Dune, commits the synchronized files, pushes a feature branch to the verified `origin` destination, and creates a PR in that repository. `/run-spec` doesn't open a PR automatically.
 
 Live execution, synchronization, and the complete `/run-spec` workflow require the external services described in the prerequisites.
 
-## Extending the Agent
+## Extend the agent
 
 The repository organizes domain knowledge into reusable skills.
 
-Shared skills contain general instructions, while leaf skills provide chain-specific or API-specific references.
+Shared skills contain general instructions. Blockchain and API skills provide references for specific data sources.
 
 Existing examples include:
 
@@ -238,5 +237,4 @@ To add support for another blockchain or API:
 3. Reference the new file through the `chains` or `apis` field in your data specification.
 4. Restart Claude Code or reload the relevant references so the agent can access the new file.
 
-The existing leaves (`chain-solana/SKILL.md`, `api-defillama/SKILL.md`) are the reference implementations — mirror their structure for consistency.
-
+Follow the structure of the existing skills, `chain-solana/SKILL.md` and `api-defillama/SKILL.md`, for consistency.
